@@ -1,75 +1,78 @@
-# Filtro de Imagen Recursiva con Streamlit
+# FotoMorsaicos Pro: Generador de Fotomosaicos con Streamlit
 
-### Joel Miguel Maya Castrejón │ mike.maya@ciencias.unam.mx │ 417112602
+### Joel Miguel Maya Castrejón | mike.maya@ciencias.unam.mx | 417112602
 
-Este proyecto consiste en una aplicación web interactiva creada con **Python** y **Streamlit** que permite aplicar un filtro **recursivo** (o tipo fotomosaico fractal) a una imagen. La idea principal es **dividir** la imagen en bloques y **reemplazar** cada bloque por la propia imagen reescalada, ajustando los colores para que coincidan con el color promedio del bloque. Esto crea un efecto en el que la imagen está compuesta “infinitamente” de versiones en miniatura de sí misma (se suele realizar solo una o pocas iteraciones para no alargar el tiempo de cómputo).
+Este proyecto consiste en una aplicación web interactiva creada con **Python** que permite generar 
+**fotomosaicos**. La idea principal es tomar una imagen objetivo, dividirla en una cuadrícula de pequeñas 
+regiones (bloques o teselas), y para cada región, sustituirla con una imagen específica de una biblioteca de imágenes. 
+La selección de la imagen de la biblioteca se basa en la similitud de color con la región de la imagen objetivo, 
+utilizando diversos criterios o métricas de distancia.
 
 ## Requisitos
 
-- Python 3.12 o superior.
-- [Streamlit](https://docs.streamlit.io/) para el desarrollo de la interfaz.
-- [Pillow](https://pillow.readthedocs.io/) (PIL) para leer y manipular las imágenes.
-- [NumPy](https://numpy.org/) para operaciones de procesamiento vectorizado.
-- [Threading](https://docs.python.org/3/library/threading.html) (parte de la librería estándar) para la ejecución en paralelo.
+- Python 3.9 o superior (recomendado 3.10+).
+- **Streamlit**: Para la interfaz web interactiva.
+- **Pillow (PIL)**: Para la carga, manipulación y procesamiento de imágenes.
+- **NumPy**: Para cálculos numéricos eficientes y operaciones vectorizadas con los datos de las imágenes.
 
-En el archivo **requirements.txt** están listadas las dependencias necesarias (Streamlit, Pillow y NumPy). Asegúrate de instalarlas antes de ejecutar la aplicación.
+Se tiene un archivo `requirements.txt` con:
+- streamlit~=1.41.1
+- pillow~=11.1.0
 
 ## Instalación
 
-1. **Clona** o **descarga** este repositorio en tu máquina local.
-2. Crea un **entorno virtual** (opcional, pero recomendado) e instálalo:
-   ```bash
-   python -m venv venv
-   source venv/bin/activate        # En Linux/Mac
-   # o en Windows: venv\Scripts\activate
-   ```
-3. Instala los paquetes necesarios:
-   ```bash
-   pip install -r requirements.txt
-   ```
+1.  **Clona** o **descarga** el repositorio en tu máquina local.
+2.  Crea un **entorno virtual** (opcional, pero altamente recomendado):
+    ```bash
+    python -m venv venv
+    # En Linux/Mac:
+    source venv/bin/activate
+    # En Windows:
+    # venv\Scripts\activate
+    ```
+3.  Instala los paquetes necesarios. Si tienes un archivo `requirements.txt`:
+    ```bash
+    pip install -r requirements.txt
+    ```
 
 ## Ejecución de la Aplicación
 
-1. Dentro del entorno virtual y en la carpeta donde se encuentra el archivo principal (por ejemplo, `imagen_recursiva.py`), ejecuta:
-   ```bash
-   streamlit run imagen_recursiva.py
-   ```
-2. Automáticamente se abrirá tu navegador mostrando la interfaz de la aplicación. Si no se abre, puedes copiar la URL que aparece en la terminal y pegarla en tu navegador.
+1.  Navega en tu terminal a la carpeta donde guardaste el archivo principal (ej., `fotomosaicos.py`).
+2.  Si estás usando un entorno virtual, asegúrate de que esté activado.
+3.  Ejecuta la aplicación Streamlit:
+    ```bash
+    streamlit run fotomosaicos.py
+    ```
+4.  El navegador web debería abrirse automáticamente mostrando la interfaz de la aplicación. Si no, copia la URL local (usualmente `http://localhost:8501`) que aparece en la terminal y pégala en tu navegador.
 
 ## Uso de la Aplicación
 
-1. **Sube una imagen** en la barra lateral (sidebar). Acepta formatos `JPG`, `JPEG`, `PNG`, entre otros. En caso de que la imagen esté en formato RGBA, se convierte a RGB.
-2. **Selecciona** el tamaño de bloque en píxeles (por ejemplo, 10 px) y el nivel de calidad del procesamiento (baja, normal, alta o ultra).
-3. Observa cómo se muestra la **imagen original** en la columna izquierda y la **imagen resultante** (recursiva) en la columna derecha.
-4. Puedes **descargar** la imagen procesada usando el botón de descarga que aparece en la interfaz.
+1.  **Sube tu Imagen Objetivo**: Utiliza el cargador de archivos en la barra lateral para seleccionar la imagen principal que deseas recrear como un fotomosaico.
+2.  **Especifica la Ruta a tu Biblioteca de Imágenes**: Ingresa la ruta completa a la carpeta en tu computadora que contiene las imágenes pequeñas (teselas) que se usarán para construir el mosaico.
+3.  **Ajusta los Parámetros del Mosaico**:
+    * **Tamaño del Bloque**: Define la resolución del fotomosaico. Bloques más pequeños significan más detalle pero un procesamiento más largo y la necesidad de una biblioteca de imágenes más grande y variada.
+    * **Métrica de Distancia**: Elige el algoritmo para comparar el color de una región de la imagen objetivo con las imágenes de la biblioteca (por ejemplo, Euclidiana, Lineal, Riemersma).
+4.  **Configura Mejoras Opcionales**:
+    * **Mejora de Contraste**: Puedes optar por realzar el contraste de la imagen objetivo antes del procesamiento.
+    * **Blending**: Permite mezclar el fotomosaico final con la imagen objetivo original para suavizar el efecto o hacerlo más fiel a los colores originales.
+    * **Permitir Repeticiones Adyacentes**: Controla si la misma imagen de la biblioteca puede usarse para teselas horizontalmente adyacentes.
+5.  **Crea y Descarga**:
+    * Haz clic en el botón "Crear Fotomosaico".
+    * Observa la imagen original (con contraste aplicado si se seleccionó) y el fotomosaico resultante.
+    * Puedes descargar la imagen del fotomosaico procesada (generalmente en formato PNG).
 
-### Explicación del Filtro Recursivo
+### Explicación del Proceso de Fotomosaico
 
-- La imagen se **divide** en bloques de tamaño fijo.
-- Para cada bloque, se calcula el **color promedio** utilizando operaciones vectorizadas de NumPy.
-- Se crea una versión en miniatura (tile) de la imagen completa y se **recolorea** para ajustar sus tonos al color promedio del bloque original.
-- El tile recoloreado se **pega** en la posición correspondiente de la imagen de salida.
-- Se utiliza **procesamiento paralelo** (mediante hilos) para acelerar la aplicación del filtro en diferentes secciones de la imagen.
-
-## Estructura del Proyecto
-
-```
-├── imagen_recursiva.py    # Código principal de la aplicación que incluye la clase RecursiveImageProcessor y la interfaz de usuario con Streamlit
-│── .streamlit/            # Carpeta de configuración de Streamlit
-│    └── config.toml       
-├── README.md              # Archivo de documentación
-├── requirements.txt       # Dependencias del proyecto (Streamlit, Pillow, NumPy)
-└── venv/                  # Entorno virtual (opcional)
-```
-
-## Detalles Técnicos
-
-- **Clase RecursiveImageProcessor:**  
-  Implementa el procesamiento de imágenes dividiéndolas en bloques, calculando el color promedio de cada bloque y generando un efecto recursivo mediante la sustitución de cada bloque por una versión en miniatura de la imagen original.  
-  Además, utiliza técnicas de **caché** (con `@lru_cache`) para optimizar el cálculo de promedios de color y **procesamiento en paralelo** (con `threading`) para mejorar el rendimiento.
-
-- **Interfaz con Streamlit:**  
-  La interfaz permite al usuario cargar imágenes, ajustar parámetros como el tamaño de bloque y la calidad, y ver en tiempo real el progreso y resultado del filtro recursivo. También ofrece la opción de descargar la imagen procesada.
-
-- **Procesamiento Eficiente:**  
-  Se aprovecha la biblioteca NumPy para realizar operaciones vectorizadas y se implementa el procesamiento paralelo, lo que permite obtener resultados de alta calidad sin tiempos de espera excesivos.
+1.  **Carga y Preprocesamiento de la Biblioteca**:
+    * Las imágenes de la carpeta especificada son cargadas.
+    * Cada imagen de la biblioteca se redimensiona al "Tamaño del Bloque" seleccionado.
+    * Se calcula y almacena el color promedio de cada una de estas miniaturas redimensionadas. Este proceso se cachea para acelerar cargas futuras si la ruta y el tamaño del bloque no cambian.
+2.  **Procesamiento de la Imagen Objetivo**:
+    * La imagen objetivo se divide conceptualmente en una cuadrícula, donde cada celda tiene el "Tamaño del Bloque". 
+    * Para cada bloque/región de la imagen objetivo:
+        * Se calcula su color promedio.
+        * Usando la **Métrica de Distancia** seleccionada, se compara este color promedio con los colores promedio de todas las miniaturas preprocesadas de la biblioteca. 
+        * La miniatura de la biblioteca cuyo color es el "más cercano" (menor distancia) se selecciona para ese bloque.
+        * La miniatura seleccionada se pega en la posición correspondiente de la imagen de salida.
+3.  **Paralelización**: El proceso de analizar bloques y seleccionar teselas se realiza en paralelo para diferentes secciones de la imagen, utilizando múltiples hilos (`threading`) para acelerar la creación del fotomosaico.
+4.  **Mejoras**: Si se seleccionan, se aplica el realce de contraste a la imagen objetivo antes del procesamiento, y/o el blending al resultado final.
