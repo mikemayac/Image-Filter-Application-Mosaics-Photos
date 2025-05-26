@@ -1,0 +1,63 @@
+# Archivos de bytecode de Python
+*.py[cod]
+*$py.class
+__pycache__/
+
+# Directorios de entorno virtual
+env/
+venv/
+.venv/
+
+# Archivos de configuración de entorno
+.env
+
+# Archivos y directorios de construcción y distribución
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+pip-wheel-metadata/
+share/python-wheels/
+
+# Archivos de PyInstaller
+*.manifest
+*.spec
+
+# Logs de instaladores y archivos temporales
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Reportes de tests y cobertura
+htmlcov/
+.tox/
+.nox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+*.py,cover
+.pytest_cache/
+
+# Documentación de Sphinx
+docs/_build/
+
+# Archivos y configuraciones de PyCharm
+.idea/
+*.iml
+
+# Otros editores (por ejemplo, VS Code)
+.vscode/
+
+# Archivos generados por el sistema operativo
+.DS_Store
+Thumbs.db
